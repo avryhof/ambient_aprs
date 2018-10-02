@@ -13,7 +13,10 @@ serverPort = 14580
 address = '%s>APRS,TCPIP*:' % station_id
 
 # Attention, format of the location is bit special. Although there is a dot, the values are in degrees, minutes and seconds!
-position = 'DDMM.SSN/DDDMM.SSE_'
+# COORDS: N 43.13132 W 76.15509   ---- 43.131258 -76.155028 -- 4307.53N  07609.18W
+# Elevation in Meters: 	128
+# Elevation in Feet: 	419.95
+position = '4307.53N/07609.18W_'
 
 
 def hg_to_mbar(hg_val):
