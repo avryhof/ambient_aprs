@@ -2,7 +2,8 @@
 
 import sys
 from datetime import datetime
-from socket import *
+# from socket import *
+from socket import socket
 
 from ambient_api.ambientapi import AmbientAPI
 
@@ -76,7 +77,7 @@ def make_aprs_wx(**kwargs):
     # Assemble the weather data of the APRS packet
     def str_or_dots(number, length):
         # If parameter is None, fill with dots, otherwise pad with zero
-        if number is None:
+        if not number:
             return '.' * length
         else:
             format_type = {
