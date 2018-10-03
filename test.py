@@ -1,7 +1,7 @@
 # Script from https://raspberrypiandstuff.wordpress.com/2017/08/07/uploading-aprscwop-weather-data/
 
-import sys, os, time
-from datetime import datetime, timedelta
+import sys
+from datetime import datetime
 from socket import *
 
 from ambient_api.ambientapi import AmbientAPI
@@ -26,7 +26,6 @@ def hg_to_mbar(hg_val):
     :return:
     """
     return (hg_val / 0.029529983071445) / 10
-
 
 
 def send_packet():
