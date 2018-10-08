@@ -79,7 +79,8 @@ class AmbientAPRS:
         :param hg_val: The value in inHg
         :return:
         """
-        return (hg_val / 0.029529983071445) / 10
+        # return (hg_val / 0.029529983071445) / 10
+        return (hg_val / 0.029529983071445)
 
     def str_or_dots(self, number, length):
         # If parameter is None, fill with dots, otherwise pad with zero
