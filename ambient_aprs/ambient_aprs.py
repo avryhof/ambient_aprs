@@ -168,5 +168,8 @@ class AmbientAPRS:
             except:
                 return False
 
+            else:
+                return True
+
         else:
             return False
