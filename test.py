@@ -3,7 +3,7 @@
 import sys
 from datetime import datetime
 # from socket import *
-from socket import socket
+from socket import socket, AF_INET, SOCK_STREAM
 
 from ambient_api.ambientapi import AmbientAPI
 
@@ -29,6 +29,18 @@ def hg_to_mbar(hg_val):
     return (hg_val / 0.029529983071445) / 10
 
 
+def str_or_dots(number, length):
+    # If parameter is None, fill with dots, otherwise pad with zero
+    if not number:
+        return '.' * length
+    else:
+        format_type = {
+            'int': 'd',
+            'float': '.0f',
+        }[type(number).__name__]
+        return ''.join(('%0', str(length), format_type)) % number
+
+
 def send_packet():
     # here is where the big change happens.... rather than using rrdtool, we will just use the API
     amb_api = AmbientAPI()
@@ -49,6 +61,8 @@ def send_packet():
         # Attention, barometric pressure in tenths of millibars/tenths of hPascal!
         pressure=hg_to_mbar(weather.get('baromabsin'))
     )
+
+    print(wx_data)
     # Use UTC
     utc_datetime = datetime.now()
     # Create socket and connect to server
@@ -75,17 +89,6 @@ def make_aprs_wx(**kwargs):
     pressure = kwargs.get('pressure', None)
 
     # Assemble the weather data of the APRS packet
-    def str_or_dots(number, length):
-        # If parameter is None, fill with dots, otherwise pad with zero
-        if not number:
-            return '.' * length
-        else:
-            format_type = {
-                'int': 'd',
-                'float': '.0f',
-            }[type(number).__name__]
-            return ''.join(('%0', str(length), format_type)) % number
-
     return '%s/%sg%st%sr%sp%sP%sh%sb%s' % (
         str_or_dots(wind_dir, 3),
         str_or_dots(wind_speed, 3),
