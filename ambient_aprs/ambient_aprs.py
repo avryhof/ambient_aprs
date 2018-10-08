@@ -80,7 +80,7 @@ class AmbientAPRS:
         :return:
         """
         # return (hg_val / 0.029529983071445) / 10
-        return (hg_val / 0.029529983071445)
+        return (hg_val / 0.29529983071445)
 
     def str_or_dots(self, number, length):
         # If parameter is None, fill with dots, otherwise pad with zero
