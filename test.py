@@ -1,7 +1,5 @@
 from ambient_aprs.ambient_aprs import AmbientAPRS
 
-position = '4307.53N/07609.18W_'
-
 aa = AmbientAPRS(
     station_id='KD2OTL',
     latitude=43.131258,
