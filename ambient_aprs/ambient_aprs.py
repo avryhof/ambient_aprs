@@ -84,14 +84,20 @@ class AmbientAPRS:
 
     def str_or_dots(self, number, length):
         # If parameter is None, fill with dots, otherwise pad with zero
+        retn_value = number
+
         if not number:
-            return '.' * length
+            retn_value = '.' * length
+
         else:
             format_type = {
                 'int': 'd',
                 'float': '.0f',
             }[type(number).__name__]
-            return ''.join(('%0', str(length), format_type)) % number
+
+            retn_value = ''.join(('%0', str(length), format_type)) % number
+
+        return retn_value
 
     def make_aprs_wx(self, **kwargs):
         wind_dir = kwargs.get('wind_dir', None)
