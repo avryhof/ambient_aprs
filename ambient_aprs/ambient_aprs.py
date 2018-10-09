@@ -127,33 +127,35 @@ class AmbientAPRS:
     def get_weather_data(self):
         amb_api = AmbientAPI()
         devices = amb_api.get_devices()
-        device = devices[0]
-        weather = device.last_data
+        if len(devices) > 0:
+            device = devices[0]
+            weather = device.last_data
 
-        # Prepare the data, which will be sent
-        self.wx_data = self.make_aprs_wx(
-            wind_dir=weather.get('winddir'),
-            wind_speed=float(weather.get('windspeedmph')),
-            wind_gust=float(weather.get('windgustmph')),
-            temperature=weather.get('tempf'),
-            rain_last_hr=weather.get('hourlyrainin'),
-            rain_last_24_hrs=None,
-            rain_since_midnight=weather.get('dailyrainin'),
-            humidity=weather.get('humidity'),
-            # Attention, barometric pressure in tenths of millibars/tenths of hPascal!
-            pressure=self.hg_to_mbar(weather.get('baromabsin'))
-        )
+            # Prepare the data, which will be sent
+            self.wx_data = self.make_aprs_wx(
+                wind_dir=weather.get('winddir'),
+                wind_speed=float(weather.get('windspeedmph')),
+                wind_gust=float(weather.get('windgustmph')),
+                temperature=weather.get('tempf'),
+                rain_last_hr=weather.get('hourlyrainin'),
+                rain_last_24_hrs=None,
+                rain_since_midnight=weather.get('dailyrainin'),
+                humidity=weather.get('humidity'),
+                # Attention, barometric pressure in tenths of millibars/tenths of hPascal!
+                pressure=self.hg_to_mbar(weather.get('baromabsin'))
+            )
 
         return self.wx_data
 
     def build_packet(self):
-        utc_datetime = datetime.now()
-        self.packet_data = '%s@%sz%s%s%s' % (
-            self.address,
-            utc_datetime.strftime("%d%H%M"),
-            self.position,
-            self.wx_data,
-            self.send_id)
+        if self.address and self.position and self.wx_data:
+            utc_datetime = datetime.now()
+            self.packet_data = '%s@%sz%s%s%s' % (
+                self.address,
+                utc_datetime.strftime("%d%H%M"),
+                self.position,
+                self.wx_data,
+                self.send_id)
 
         return self.packet_data
 
