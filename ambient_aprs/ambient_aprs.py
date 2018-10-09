@@ -79,7 +79,7 @@ class AmbientAPRS:
         :param hg_val: The value in inHg
         :return:
         """
-        mbar = hg_val / 0.029530
+        mbar = (hg_val / 0.029530) * 10
 
         return mbar
 
