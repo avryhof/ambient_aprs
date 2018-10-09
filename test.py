@@ -8,7 +8,7 @@ aa = AmbientAPRS(
 
 print(aa.get_weather_data())
 print(aa.build_packet())
-if aa.send_packet():
-    print('Sent')
-else:
-    print('Failed')
+# if aa.send_packet():
+#     print('Sent')
+# else:
+#     print('Failed')
