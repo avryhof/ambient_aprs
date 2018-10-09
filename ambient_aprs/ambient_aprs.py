@@ -79,9 +79,9 @@ class AmbientAPRS:
         :param hg_val: The value in inHg
         :return:
         """
-        hPascals = hg_val / 0.029529983071445
+        mbar = hg_val / 0.029530
 
-        return hPascals * 10
+        return mbar
 
     def str_or_dots(self, number, length):
         # If parameter is None, fill with dots, otherwise pad with zero
