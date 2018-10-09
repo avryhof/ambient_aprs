@@ -79,8 +79,9 @@ class AmbientAPRS:
         :param hg_val: The value in inHg
         :return:
         """
-        # return (hg_val / 0.029529983071445) / 10
-        return (hg_val / 0.29529983071445)
+        mbar = (hg_val / 0.029530) * 10
+
+        return mbar
 
     def str_or_dots(self, number, length):
         # If parameter is None, fill with dots, otherwise pad with zero
@@ -163,16 +164,17 @@ class AmbientAPRS:
                 sSock = socket(AF_INET, SOCK_STREAM)
                 sSock.connect((self.server_host, self.server_port))
                 # Log on
-                sSock.send('user %s pass -1 vers Python\n' % self.station_id)
+                login = 'user %s pass -1 vers Python\n' % self.station_id
+                sSock.send(login.encode('utf-8'))
                 # Send packet
                 if packet:
-                    sSock.send(packet)
+                    sSock.send(packet.encode('utf-8'))
                 elif self.packet_data:
-                    sSock.send(self.packet_data)
+                    sSock.send(self.packet_data.encode('utf-8'))
                 # Close socket, must be closed to avoid buffer overflow
                 sSock.shutdown(0)
                 sSock.close()
-            except:
+            except Exception as e:
                 return False
 
             else:
