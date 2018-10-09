@@ -9,8 +9,8 @@ class AmbientAPRS:
 
     station_id = None
 
-    serverHost = 'cwop.aprs.net'
-    serverPort = 14580
+    server_host = 'cwop.aprs.net'
+    server_port = 14580
     address = None
 
     position = None
