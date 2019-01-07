@@ -47,8 +47,20 @@ class AmbientAPRS:
 
         return {'degrees': degrees, 'minutes': minutes, 'seconds': seconds}
 
+    def decdeg2dmm_m(self, degrees_decimal):
+        is_positive = degrees_decimal >= 0
+        degrees_decimal = abs(degrees_decimal)
+        minutes, seconds = divmod(degrees_decimal * 3600, 60)
+        degrees, minutes = divmod(minutes, 60)
+        degrees = degrees if is_positive else -degrees
+
+        degrees = str(int(degrees)).zfill(2).replace('-', '0')
+        minutes = str(round(minutes + (seconds / 60), 2)).zfill(5)
+
+        return {'degrees': degrees, 'minutes': minutes}
+
     def convert_latitude(self, degrees_decimal):
-        det = self.decdeg2dms(degrees_decimal)
+        det = self.decdeg2dmm_m(degrees_decimal)
         if degrees_decimal > 0:
             direction = 'N'
         else:
@@ -56,12 +68,13 @@ class AmbientAPRS:
 
         degrees = det.get('degrees')
         minutes = det.get('minutes')
-        seconds = det.get('seconds')
 
-        return '%s%s.%s%s' % (degrees, minutes, seconds, direction)
+        lat = '%s%s%s' % (degrees, str(minutes), direction)
+
+        return lat
 
     def convert_longitude(self, degrees_decimal):
-        det = self.decdeg2dms(degrees_decimal)
+        det = self.decdeg2dmm_m(degrees_decimal)
         if degrees_decimal > 0:
             direction = 'E'
         else:
@@ -69,9 +82,10 @@ class AmbientAPRS:
 
         degrees = det.get('degrees')
         minutes = det.get('minutes')
-        seconds = det.get('seconds')
 
-        return '%s%s.%s%s' % (degrees, minutes, seconds, direction)
+        lon = '%s%s%s' % (degrees, str(minutes), direction)
+
+        return lon
 
     def hg_to_mbar(self, hg_val):
         """
