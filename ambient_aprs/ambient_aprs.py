@@ -1,7 +1,10 @@
+import logging
 from datetime import datetime
 from socket import socket, AF_INET, SOCK_STREAM
 
 from ambient_api.ambientapi import AmbientAPI
+
+logger = logging.getLogger(__name__)
 
 
 class AmbientAPRS:
@@ -33,6 +36,12 @@ class AmbientAPRS:
 
         if self.station_id:
             self.address = '%s>APRS,TCPIP*:' % self.station_id
+
+    def log_message(self, message):
+        log_date = datetime.now().isoformat()[0:19]
+        logmessage = '%s: %s' % (log_date, message)
+
+        logger.info(logmessage)
 
     def decdeg2dms(self, degrees_decimal):
         is_positive = degrees_decimal >= 0
@@ -138,13 +147,17 @@ class AmbientAPRS:
             self.str_or_dots(pressure, 5),
         )
 
-    def get_weather_data(self):
-        amb_api = AmbientAPI()
-        devices = amb_api.get_devices()
-        if len(devices) > 0:
-            device = devices[0]
-            weather = device.last_data
+    def get_weather_data(self, **kwargs):
+        weather = kwargs.get('weather_data', False)
 
+        if not weather:
+            amb_api = AmbientAPI()
+            devices = amb_api.get_devices()
+            if len(devices) > 0:
+                device = devices[0]
+                weather = device.last_data
+
+        if weather and isinstance(weather, dict):
             # Prepare the data, which will be sent
             self.wx_data = self.make_aprs_wx(
                 wind_dir=weather.get('winddir'),
