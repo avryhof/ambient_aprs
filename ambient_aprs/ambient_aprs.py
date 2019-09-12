@@ -169,7 +169,7 @@ class AmbientAPRS:
                 rain_since_midnight=weather.get('dailyrainin'),
                 humidity=weather.get('humidity'),
                 # Attention, barometric pressure in tenths of millibars/tenths of hPascal!
-                pressure=self.hg_to_mbar(weather.get('baromabsin'))
+                pressure=self.hg_to_mbar(weather.get('baromrelin'))
             )
 
         return self.wx_data
