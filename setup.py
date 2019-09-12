@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='ambient_aprs',
-    version='0.11.1',
+    version='0.11.2',
     packages=['ambient_aprs'],
     url='https://github.com/avryhof/ambient_aprs',
     license='MIT',
