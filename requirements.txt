@@ -1,6 +1,7 @@
 ambient-api>=1.5.2
-certifi==2018.8.24
+certifi>=2019.11.28
 chardet==3.0.4
-idna==2.7
-requests>=2.20.0
-urllib3==1.24.2
+idna<=2.9
+requests>=2.22.0
+urllib3 <1.26
+

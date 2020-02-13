@@ -8,11 +8,11 @@ logger = logging.getLogger(__name__)
 
 
 class AmbientAPRS:
-    send_id = 'Ambient APRS'
+    send_id = "Ambient APRS"
 
     station_id = None
 
-    server_host = 'cwop.aprs.net'
+    server_host = "cwop.aprs.net"
     server_port = 14580
     address = None
 
@@ -22,24 +22,27 @@ class AmbientAPRS:
     packet_data = None
 
     def __init__(self, **kwargs):
-        self.send_id = kwargs.get('send_id', 'Ambient APRS')
+        self.send_id = kwargs.get("send_id", "Ambient APRS")
 
-        self.station_id = kwargs.get('station_id', None)
-        self.server_host = kwargs.get('host', 'cwop.aprs.net')
-        self.server_port = kwargs.get('port', 14580)
+        self.station_id = kwargs.get("station_id", None)
+        self.server_host = kwargs.get("host", "cwop.aprs.net")
+        self.server_port = kwargs.get("port", 14580)
 
-        self.latitude = kwargs.get('latitude', None)
-        self.longitude = kwargs.get('longitude', None)
+        self.latitude = kwargs.get("latitude", None)
+        self.longitude = kwargs.get("longitude", None)
 
         if self.latitude and self.longitude:
-            self.position = '%s/%s_' % (self.convert_latitude(self.latitude), self.convert_longitude(self.longitude))
+            self.position = "%s/%s_" % (
+                self.convert_latitude(self.latitude),
+                self.convert_longitude(self.longitude),
+            )
 
         if self.station_id:
-            self.address = '%s>APRS,TCPIP*:' % self.station_id
+            self.address = "%s>APRS,TCPIP*:" % self.station_id
 
     def log_message(self, message):
         log_date = datetime.now().isoformat()[0:19]
-        logmessage = '%s: %s' % (log_date, message)
+        logmessage = "%s - %s: %s" % (log_date, self.__name__, message)
 
         logger.info(logmessage)
 
@@ -50,11 +53,11 @@ class AmbientAPRS:
         degrees, minutes = divmod(minutes, 60)
         degrees = degrees if is_positive else -degrees
 
-        degrees = str(int(degrees)).zfill(2).replace('-', '0')
-        minutes = str(int(minutes)).zfill(2).replace('-', '0')
-        seconds = str(int(round(seconds * .01, 2) * 100)).zfill(2)
+        degrees = str(int(degrees)).zfill(2).replace("-", "0")
+        minutes = str(int(minutes)).zfill(2).replace("-", "0")
+        seconds = str(int(round(seconds * 0.01, 2) * 100)).zfill(2)
 
-        return {'degrees': degrees, 'minutes': minutes, 'seconds': seconds}
+        return {"degrees": degrees, "minutes": minutes, "seconds": seconds}
 
     def decdeg2dmm_m(self, degrees_decimal):
         is_positive = degrees_decimal >= 0
@@ -63,36 +66,36 @@ class AmbientAPRS:
         degrees, minutes = divmod(minutes, 60)
         degrees = degrees if is_positive else -degrees
 
-        degrees = str(int(degrees)).zfill(2).replace('-', '0')
+        degrees = str(int(degrees)).zfill(2).replace("-", "0")
         minutes = str(round(minutes + (seconds / 60), 2)).zfill(5)
 
-        return {'degrees': degrees, 'minutes': minutes}
+        return {"degrees": degrees, "minutes": minutes}
 
     def convert_latitude(self, degrees_decimal):
         det = self.decdeg2dmm_m(degrees_decimal)
         if degrees_decimal > 0:
-            direction = 'N'
+            direction = "N"
         else:
-            direction = 'S'
+            direction = "S"
 
-        degrees = det.get('degrees')
-        minutes = det.get('minutes')
+        degrees = det.get("degrees")
+        minutes = det.get("minutes")
 
-        lat = '%s%s%s' % (degrees, str(minutes), direction)
+        lat = "%s%s%s" % (degrees, str(minutes), direction)
 
         return lat
 
     def convert_longitude(self, degrees_decimal):
         det = self.decdeg2dmm_m(degrees_decimal)
         if degrees_decimal > 0:
-            direction = 'E'
+            direction = "E"
         else:
-            direction = 'W'
+            direction = "W"
 
-        degrees = det.get('degrees')
-        minutes = det.get('minutes')
+        degrees = det.get("degrees")
+        minutes = det.get("minutes")
 
-        lon = '%s%s%s' % (degrees, str(minutes), direction)
+        lon = "%s%s%s" % (degrees, str(minutes), direction)
 
         return lon
 
@@ -108,34 +111,29 @@ class AmbientAPRS:
 
     def str_or_dots(self, number, length):
         # If parameter is None, fill with dots, otherwise pad with zero
-        retn_value = number
-
         if not number:
-            retn_value = '.' * length
+            retn_value = "." * length
 
         else:
-            format_type = {
-                'int': 'd',
-                'float': '.0f',
-            }[type(number).__name__]
+            format_type = {"int": "d", "float": ".0f"}[type(number).__name__]
 
-            retn_value = ''.join(('%0', str(length), format_type)) % number
+            retn_value = "".join(("%0", str(length), format_type)) % number
 
         return retn_value
 
     def make_aprs_wx(self, **kwargs):
-        wind_dir = kwargs.get('wind_dir', None)
-        wind_speed = kwargs.get('wind_speed', None)
-        wind_gust = kwargs.get('wind_gust', None)
-        temperature = kwargs.get('temperature', None)
-        rain_last_hr = kwargs.get('rain_last_hr', None)
-        rain_last_24_hrs = kwargs.get('rain_last_24_hrs', None)
-        rain_since_midnight = kwargs.get('rain_since_midnight', None)
-        humidity = kwargs.get('humidity', None)
-        pressure = kwargs.get('pressure', None)
+        wind_dir = kwargs.get("wind_dir", None)
+        wind_speed = kwargs.get("wind_speed", None)
+        wind_gust = kwargs.get("wind_gust", None)
+        temperature = kwargs.get("temperature", None)
+        rain_last_hr = kwargs.get("rain_last_hr", None)
+        rain_last_24_hrs = kwargs.get("rain_last_24_hrs", None)
+        rain_since_midnight = kwargs.get("rain_since_midnight", None)
+        humidity = kwargs.get("humidity", None)
+        pressure = kwargs.get("pressure", None)
 
         # Assemble the weather data of the APRS packet
-        return '%s/%sg%st%sr%sp%sP%sh%sb%s' % (
+        return "%s/%sg%st%sr%sp%sP%sh%sb%s" % (
             self.str_or_dots(wind_dir, 3),
             self.str_or_dots(wind_speed, 3),
             self.str_or_dots(wind_gust, 3),
@@ -148,7 +146,7 @@ class AmbientAPRS:
         )
 
     def get_weather_data(self, **kwargs):
-        weather = kwargs.get('weather_data', False)
+        weather = kwargs.get("weather_data", False)
 
         if not weather:
             amb_api = AmbientAPI()
@@ -160,16 +158,16 @@ class AmbientAPRS:
         if weather and isinstance(weather, dict):
             # Prepare the data, which will be sent
             self.wx_data = self.make_aprs_wx(
-                wind_dir=weather.get('winddir'),
-                wind_speed=float(weather.get('windspeedmph')),
-                wind_gust=float(weather.get('windgustmph')),
-                temperature=weather.get('tempf'),
-                rain_last_hr=weather.get('hourlyrainin'),
+                wind_dir=weather.get("winddir"),
+                wind_speed=float(weather.get("windspeedmph")),
+                wind_gust=float(weather.get("windgustmph")),
+                temperature=weather.get("tempf"),
+                rain_last_hr=weather.get("hourlyrainin"),
                 rain_last_24_hrs=None,
-                rain_since_midnight=weather.get('dailyrainin'),
-                humidity=weather.get('humidity'),
+                rain_since_midnight=weather.get("dailyrainin"),
+                humidity=weather.get("humidity"),
                 # Attention, barometric pressure in tenths of millibars/tenths of hPascal!
-                pressure=self.hg_to_mbar(weather.get('baromrelin'))
+                pressure=self.hg_to_mbar(weather.get("baromrelin")),
             )
 
         return self.wx_data
@@ -177,12 +175,13 @@ class AmbientAPRS:
     def build_packet(self):
         if self.address and self.position and self.wx_data:
             utc_datetime = datetime.now()
-            self.packet_data = '%s@%sz%s%s%s' % (
+            self.packet_data = "%s@%sz%s%s%s" % (
                 self.address,
                 utc_datetime.strftime("%d%H%M"),
                 self.position,
                 self.wx_data,
-                self.send_id)
+                self.send_id,
+            )
 
         return self.packet_data
 
@@ -190,20 +189,20 @@ class AmbientAPRS:
         if packet or self.packet_data:
             try:
                 # Create socket and connect to server
-                sSock = socket(AF_INET, SOCK_STREAM)
-                sSock.connect((self.server_host, self.server_port))
+                s_sock = socket(AF_INET, SOCK_STREAM)
+                s_sock.connect((self.server_host, self.server_port))
                 # Log on
-                login = 'user %s pass -1 vers Python\n' % self.station_id
-                sSock.send(login.encode('utf-8'))
+                login = "user %s pass -1 vers Python\n" % self.station_id
+                s_sock.send(login.encode("utf-8"))
                 # Send packet
                 if packet:
-                    sSock.send(packet.encode('utf-8'))
+                    s_sock.send(packet.encode("utf-8"))
                 elif self.packet_data:
-                    sSock.send(self.packet_data.encode('utf-8'))
+                    s_sock.send(self.packet_data.encode("utf-8"))
                 # Close socket, must be closed to avoid buffer overflow
-                sSock.shutdown(0)
-                sSock.close()
-            except Exception as e:
+                s_sock.shutdown(0)
+                s_sock.close()
+            except Exception:  # noqa
                 return False
 
             else:
